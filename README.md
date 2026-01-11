@@ -1,15 +1,66 @@
-# async-job-executor
-非同期実行サービス
+# 非同期実行サービス（Async Job Executor）
 
-# Async Task Platform
+## 概要
 
-This project is an asynchronous task execution platform.
+本プロジェクトは、**長時間・失敗前提の処理を安全に実行するための  
+非同期タスク実行サービス**です。
 
-Users register tasks via a Java-based API.
-Tasks are executed asynchronously by a Go-based worker.
-Each execution is tracked with execution history and logs.
+外部 API 呼び出しやファイル生成など、  
+同期処理では扱いづらいユースケースを想定し、
 
-## Architecture (WIP)
+- タスクの「目的」と
+- 実行の「試行」
+
+を分離してモデリングしています。
+
+---
+
+## 背景・目的
+
+業務や個人開発において、以下のような課題を感じたことがきっかけです。
+
+- 同期 API に長時間処理を載せてしまい、タイムアウトや再実行が困難
+- 失敗時に「何が・どこで・何回目に」失敗したか追えない
+- 再実行や部分的な失敗を前提にした設計がされていない
+
+これらを解決するため、  
+**非同期処理を前提とした状態管理・実行モデルの設計**を主目的として  
+本プロジェクトを作成しています。
+
+---
+
+## 設計方針（重要）
+
+### 1. Task と Execution の分離
+
+- **Task**
+
+  - ユーザーが登録する「やりたいこと（目的）」
+  - 状態は `PENDING / RUNNING / COMPLETED / FAILED` のみ
+
+- **TaskExecution**
+  - 実際の実行試行（リトライ含む）
+  - 実行回数・エラー・実行時間・入力/結果スナップショットを保持
+
+これにより、
+
+- 状態爆発を防ぎ
+- 再実行・監査・デバッグを容易にしています。
+
+---
+
+### 2. 非同期前提の状態遷移とトランザクション設計
+
+- 状態遷移は **ガード条件付き UPDATE** により DB で保証
+- 外部 I/O（API 呼び出し、ファイル生成）はトランザクション外で実行
+- 冪等性と at-least-once 配送を前提とした設計
+
+詳細は `docs/transaction-policy.md` を参照してください。
+
+---
+
+## アーキテクチャ
+
 - API: Java
 - Worker: Go
 - Execution model: Async / Queue-based
