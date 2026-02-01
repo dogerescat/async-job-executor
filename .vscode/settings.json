@@ -1,0 +1,104 @@
+{
+  // ====================================
+  // VSCode 設定
+  // ====================================
+  // 特定のファイルをVSCodeのエクスプローラに表示しない
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  // 改行コード
+  "files.eol": "\n",
+
+  // ====================================
+  // Javaプロジェクト設定
+  // ====================================
+  "java.compile.nullAnalysis.mode": "automatic", // // NullPointerExceptionが発生しそうなコードに警告を表示する
+  "java.configuration.updateBuildConfiguration": "automatic", // build.gradleに修正が入った際に自動で再ビルドをサジェストする
+  // ====================================
+  // フォーマット(全般)
+  // ====================================
+  "editor.formatOnSave": true, // 保存時にフォーマットをかける
+  "editor.tabSize": 2, // タブサイズを2にする
+  "editor.insertSpaces": true, // タブの代わりにスペースを使用する
+  "editor.detectIndentation": false, // インデントを自動検出しない
+  "files.trimTrailingWhitespace": true, // 保存時に末尾の空白を削除する
+  "files.insertFinalNewline": true, // 保存時にファイルの末尾に改行を追加する
+
+  // ====================================
+  // Prettierの設定
+  // ====================================
+  "prettier.singleQuote": true, // シングルクオートを使用する
+  "prettier.printWidth": 120, // 一行は120文字までとする
+  "prettier.trailingComma": "all",
+
+  // ====================================
+  // ESLintの設定
+  // ====================================
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact", "jsx"],
+  "eslint.workingDirectories": ["./client"],
+
+  // ====================================
+  // フォーマット(Java)
+  // ====================================
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  // 保存時にインポート文をcom.azure,com.fasterxml,java,javax,com,orgの順に整頓する(フォーマットルールに準拠するため)
+  "java.completion.importOrder": [
+    "com.ibm",
+    "com.azure",
+    "com.fasterxml",
+    "jakarta",
+    "java",
+    "javax",
+    "com",
+    "lombok",
+    "org"
+  ],
+  "java.format.settings.url": ".vscode/eclipse-java-google-style.xml",
+  "java.checkstyle.configuration": "/google_checks.xml",
+  "java.format.settings.profile": "GoogleStyle",
+  "java.format.enabled": true,
+  // ====================================
+  // フォーマット(JavaScript, JSON, Markdown, HTML, CSS, XML)
+  // 保存時にPrettierでフォーマットする
+  // ====================================
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": false // Markdown のファイルは行末の空白をトリミングしない
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java"
+  },
+  // ====================================
+  // Spell Checker
+  // ====================================
+  "cSpell.words": [],
+  // ====================================
+  // 拡張機能推奨
+  // ====================================
+  "extensions.ignoreRecommendations": false,
+  "java.dependency.packagePresentation": "hierarchical"
+}
