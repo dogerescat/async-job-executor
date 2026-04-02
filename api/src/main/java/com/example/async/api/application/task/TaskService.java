@@ -1,5 +1,6 @@
 package com.example.async.api.application.task;
 
+import com.example.async.api.application.port.TaskExecutionMessagePublisher;
 import com.example.async.api.common.exception.TaskConflictException;
 import com.example.async.api.common.exception.TaskNotFoundException;
 import com.example.async.api.domain.task.FileType;
@@ -14,8 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class TaskService {
   private final TaskRepository taskRepository;
 
-  public TaskService(TaskRepository taskRepository) {
+  private final TaskExecutionMessagePublisher taskExecutionMessagePublisher;
+
+  public TaskService(TaskRepository taskRepository,
+      TaskExecutionMessagePublisher taskExecutionMessagePublisher) {
     this.taskRepository = taskRepository;
+    this.taskExecutionMessagePublisher = taskExecutionMessagePublisher;
   }
 
   @Transactional
@@ -23,6 +28,8 @@ public class TaskService {
     var task = TaskFactory.createNew(command.title(), command.description(), command.inputContext(),
         FileType.valueOf(command.outputType()));
     Task saved = taskRepository.save(task);
+
+    taskExecutionMessagePublisher.publish(saved.getId());
     return saved.getId();
   }
 

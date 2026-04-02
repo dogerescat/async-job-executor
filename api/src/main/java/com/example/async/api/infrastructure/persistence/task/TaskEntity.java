@@ -7,15 +7,19 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import com.example.async.api.domain.task.FileType;
 import com.example.async.api.domain.task.Task;
 import com.example.async.api.domain.task.TaskStatus;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "tasks")
 public class TaskEntity {
   public TaskEntity(Task task) {
@@ -64,4 +68,20 @@ public class TaskEntity {
    */
   @Column(nullable = false)
   private OffsetDateTime updatedAt;
+
+  @PrePersist
+  private void onCreate() {
+    OffsetDateTime now = OffsetDateTime.now();
+    this.createdAt = now;
+    this.updatedAt = now;
+    // 現在は認証未実装のため、システムユーザーを示す既定値を入れておく
+    if (this.createdBy == null) {
+      this.createdBy = 0;
+    }
+  }
+
+  @PreUpdate
+  private void onUpdate() {
+    this.updatedAt = OffsetDateTime.now();
+  }
 }
